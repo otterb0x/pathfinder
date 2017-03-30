@@ -1,5 +1,8 @@
 #include "ray_window.h"
 
+/*
+Automaticallymakes a window display using X11
+*/
 ray_window::ray_window(int v_XRES, int v_YRES)
 {
 	// Set the XRES & YRES to the visiting variables
@@ -10,12 +13,19 @@ ray_window::ray_window(int v_XRES, int v_YRES)
 	initialize();
 }
 
+/*
+Free up resources after the ray_window object is destroyed
+*/
 ray_window::~ray_window()
 {
 	// Free up resources
 	close();
 }
 
+/*
+Goes through all the essential X11 functions necessary to create
+a window
+*/
 void ray_window::initialize()
 {
 	unsigned long black,white;
@@ -56,6 +66,9 @@ void ray_window::initialize()
         XMapRaised(current_display, current_window);
 }
 
+/*
+Free up the three resource grabbing variables GC, Window, and Display
+*/
 void ray_window::close()
 {
 	// Free up system resources
@@ -72,7 +85,10 @@ void ray_window::read_events()
 	XNextEvent(current_display, &event);
 }
 
-
+/*
+Takes an array of wall_objects, then takes the size of the wall object,
+and draws verticle lines centered horizontally
+*/
 void ray_window::line_cast(wall_object line_array[])
 {
 	XClearWindow(current_display, current_window);
@@ -117,6 +133,7 @@ void ray_window::line_cast(wall_object line_array[])
 	}
 }
 
+// Sets the window to white
 void ray_window::clear()
 {
 	// Set the window to white
