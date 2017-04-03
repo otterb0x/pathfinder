@@ -6,6 +6,11 @@ ray_window::ray_window(int v_XRES, int v_YRES)
 	XRES = v_XRES;
 	YRES = v_YRES;
 
+	window_buffer = new int*[XRES];
+
+	for(int i = 0; i < XRES; i++)
+		window_buffer[i] = new int[YRES];		
+
 	// Initialize the display
 	initialize();
 }
@@ -72,6 +77,61 @@ void ray_window::read_events()
 	XNextEvent(current_display, &event);
 }
 
+
+void ray_window::line_cast_to_buffer(wall_object line_array[])
+{
+	int current_point;
+	int draw_size;
+
+	for(int i = 0; i < XRES; i++)
+	{
+		current_point = (YRES / 2) - (line_array[i].get_size() / 2);
+		draw_size = line_array[i].get_size(); 
+
+		while(current_point < draw_size)
+		{
+			if((current_point > 0) && (current_point < YRES))
+			{
+				window_buffer[i][current_point] = 
+						line_array[i].get_hex_color();
+			}
+		}
+	}
+}
+
+void ray_window::draw_rectangle_to_buffer(int X1, int Y1,
+				int X2, int Y2,
+				int color)
+{
+	for(int i = X1; i < X2; i++)
+	{
+		if((i > 0) && (i < XRES))
+		{
+			for(int j = Y1; j < Y2; j++)
+			{
+				if((j > 0) && (j < YRES))
+				{
+				 window_buffer[i][j] = color;	
+				}
+			}
+		}
+	}
+}
+
+
+void ray_window::draw_buffer()
+{
+	for(int i = 0; i < XRES; i++)
+		for(int j = 0; j < YRES; j++)
+		{
+			XSetForeground(current_display, 
+					graphics_context,
+					window_buffer[i][j]);
+
+			XDrawPoint(current_display, current_window, 
+				graphics_context, i, j);
+		}
+}
 
 void ray_window::line_cast(wall_object line_array[])
 {

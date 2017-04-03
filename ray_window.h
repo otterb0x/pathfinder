@@ -11,6 +11,12 @@ class ray_window
 		~ray_window();
 	
 		void read_events();
+
+		void line_cast_to_buffer(wall_object line_array[]);
+		void draw_rectangle_to_buffer(int X1, int Y1, 
+						int X2, int Y2,
+						int color);
+		void draw_buffer();
 		
 		void line_cast(wall_object line_array[]);
 		void clear();
@@ -26,6 +32,8 @@ class ray_window
 		int XRES;
 		int YRES;
 
+		int** window_buffer;
+		
 		void initialize();
 		void close();
 
