@@ -206,37 +206,59 @@ float ray_caster::get_box_distance(float X1, float Y1, float X2, float Y2,
 }
 
 
-//Function: See if two lines intersect
-float ray_caster::get_distance(float playerX1, float playerY1, 
-				float playerX2, float playerY2, 
-				float wallX1, float wallY1, 
-				float wallX2, float wallY2)
+float ray_caster::get_distance(float line1_x1, float line1_y1,
+                                        float line1_x2, float line1_y2,
+                                        float line2_x1, float line2_y1,
+                                        float line2_x2, float line2_y2)
 {
-	//Declarations
-	float playerSlope, wallSlope, result;
-	
-	//Find slope of each line.
-	playerSlope = (playerY2 - playerY1)/(playerX2 - playerX1);
-	wallSlope = (wallY2 - wallY1)/(wallX2 - wallX1);
-	
-	
-	//Check to see if they intersect.
-	
-	//If they don't intersect, return -1.
-	if (playerSlope == wallSlope)
-	{
-		result = -1;
-	}
-	
-	//If they intersect, return the distance from the point it was cast to the point it hits the wall.
-	else
-	{
-		result = wallX1 - playerX1;
-	}
-	
-	return result;
+	float distance;
 
+	float A1 = line1_y2 - line1_y1;
+	float B1 = line1_x1 - line1_x2;
+	float C1 = (A1 * line1_x1) + (B1 * line1_y1);
+
+	float A2 = line2_y2 - line2_y1;
+	float B2 = line2_x1 - line2_x2;
+	float C2 = (A2 * line2_x1) + (B2 * line2_y1);
+
+	
+
+    float denominator = (A1 * B2) - (A2 * B1);
+
+    if(denominator == 0)
+    {
+        return -1;
+    }
+
+    // These following intersection values are assuming the line is
+    // infinitly extendeding.
+
+    float intersectX = ((B2 * C1) - (B1 * C2)) / denominator;
+    float intersectY = ((A1 * C2) - (A2 * C1)) / denominator;
+
+    // These following values are used for checking if the intersection
+    // point is within the bounds of the lines.
+
+    float rx0 = (intersectX - line1_x1) / (line1_x2 - line1_x1);
+    float ry0 = (intersectY - line1_y1) / (line1_y2 - line1_y1);
+    float rx1 = (intersectX - line2_x1) / (line2_x2 - line2_x1);
+    float ry1 = (intersectY - line2_y1) / (line2_y2 - line2_y1);
+
+
+    if(((rx0 >= 0.0f && rx0 <= 1) || 
+	(ry0 >= 0.0f && ry0 <= 1)) && 
+	((rx1 >= 0.0f && rx1 <= 1) || 
+	(ry1 >= 0.0f && ry1 <= 1)))
+    {
+        return sqrt(pow((intersectX - line1_x1), 2) + 
+		    pow((intersectY - line1_y1), 2));
+    }
+    else
+    {
+        return -1;
+    }
 }
+
 
 /*
 Takes in a direction and a rate and returns the rate of
