@@ -21,11 +21,14 @@ class wall_object
 		void set_green(int val) {GREEN = (val % 100);}
 		void set_blue(int val) {BLUE = (val % 100);}
 
-		void set_size(int distance);
-		int get_size() {return SIZE;}
+		void set_size(float distance);
+		float get_size() {return SIZE;}
 
 		void set_unit(int size) {UNIT_SIZE = size;}
 		void set_max(int size) {MAX_SIZE = size;}
+
+		void set_distance(float distance) {DISTANCE = distance;}
+		float get_distance() {return DISTANCE;}
 
 	private:
 		int RED;
@@ -34,7 +37,8 @@ class wall_object
 
 		int MAX_SIZE;
 		int UNIT_SIZE;
-		int SIZE;
+		float SIZE;
+		float DISTANCE;
 };
 
 #endif

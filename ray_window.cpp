@@ -77,57 +77,87 @@ void ray_window::read_events()
 	XNextEvent(current_display, &event);
 }
 
-
+/*
+Takes an array of wall_objects and displays them across the screen
+the line object array must be smaller than the X resolution and
+should be equal to it.
+*/
 void ray_window::line_cast_to_buffer(wall_object line_array[])
 {
 	int current_point;
 	int draw_size;
 
+	// For every line in the X direction..
 	for(int i = 0; i < XRES; i++)
 	{
+		// Start from the center minus half of the size
 		current_point = (YRES / 2) - (line_array[i].get_size() / 2);
-		draw_size = line_array[i].get_size(); 
+		draw_size = (YRES / 2) + (line_array[i].get_size() / 2);
 
-		while(current_point < draw_size)
+		// If the size is off the window less than zero set the draw
+		// point to the edge
+		if(current_point < 0)
+			current_point = 0;
+
+		// While there are points that need to be drawn...
+		while(current_point < draw_size && current_point < YRES)
 		{
+			// Make sure we're within the bounds
 			if((current_point > 0) && (current_point < YRES))
 			{
+				// Draw the point on the window buffer
 				window_buffer[i][current_point] = 
 						line_array[i].get_hex_color();
 			}
+			// Proceed to the next point
+			current_point++;
 		}
 	}
 }
 
+/*
+Draws a rectangle from the top left point to the bottom right point.
+Must be from top left to bottom right.
+*/
 void ray_window::draw_rectangle_to_buffer(int X1, int Y1,
 				int X2, int Y2,
 				int color)
 {
+	// Loop through the X row
 	for(int i = X1; i < X2; i++)
 	{
+		// Make sure we're in bounds of the window buffer
 		if((i > 0) && (i < XRES))
 		{
+			// Loop through the Y row
 			for(int j = Y1; j < Y2; j++)
 			{
+				// Make sure we're still in bounds
 				if((j > 0) && (j < YRES))
 				{
-				 window_buffer[i][j] = color;	
+					// Change the pixel color
+				 	window_buffer[i][j] = color;
 				}
 			}
 		}
 	}
 }
 
-
+/*
+Draws the window buffer to the screen
+*/
 void ray_window::draw_buffer()
 {
+	// Loop through the X & Y rows
 	for(int i = 0; i < XRES; i++)
 		for(int j = 0; j < YRES; j++)
 		{
+			// Set the draw color
 			XSetForeground(current_display, 
 					graphics_context,
 					window_buffer[i][j]);
 
+			// Draw the point to the screen
 			XDrawPoint(current_display, current_window, 
 				graphics_context, i, j);
 		}
