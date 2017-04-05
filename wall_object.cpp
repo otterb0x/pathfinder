@@ -54,6 +54,26 @@ int wall_object::get_hex_color()
 	return total_val;
 }
 
+void wall_object::set_base_hex_color(int r, int g, int b)
+{
+	BASE_RED = (r % 100);
+        BASE_GREEN = (g % 100);
+        BASE_BLUE = (b % 100);
+}
+
+
+int wall_object::get_base_hex_color()
+{
+	int total_val;
+
+        total_val = BASE_RED * 0x10000;
+        total_val += BASE_GREEN * 0x100;
+        total_val += BASE_BLUE;
+
+        return total_val;
+}
+
+
 /*
 Sets the member named SIZE to the size of the wall divided by the distance
 to make seem like the wall is farther when the distance is higher. 
@@ -70,8 +90,7 @@ void wall_object::set_size(float distance)
 	if(distance > 0)
 	{
 		//Calculate the wall
-		size_calc = 100.0f * UNIT_SIZE / distance;
-		RED = RED / (distance / 100.0f);
+		size_calc = 1000.0f * UNIT_SIZE / distance;
 	}
 	else // Wall doesn't exist
 		size_calc = -1;

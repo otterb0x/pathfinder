@@ -67,8 +67,7 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 	{
 		// Set the current angle for the specific ray
 		current_angle = start_angle + (i * angle_step);
-
-
+	
 		// For every square on the map...
 		for(int j = 0; j < map_size; j++)
 			for(int k = 0; k < map_size; k++)
@@ -110,7 +109,15 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 				if(raycast_array[i].get_size() < 0 ||
 				distance_calc < 
 				raycast_array[i].get_distance())
-				raycast_array[i].set_size(distance_calc);
+				{
+			// I have to set these lines back for 
+			// g++ to accept them
+				raycast_array[i].set_hex_color(
+		100.0f * raycast_array[i].get_base_red() / distance_calc,
+		100.0f * raycast_array[i].get_base_green() / distance_calc,
+		100.0f * raycast_array[i].get_base_blue() / distance_calc);
+			raycast_array[i].set_size(distance_calc);
+				}
 			}
 	}
 }

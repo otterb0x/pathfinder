@@ -42,7 +42,7 @@ int main()
 		// Will have to change later
 		rays[i].set_size(i);
 		// Set the color of the wall
-		rays[i].set_hex_color(0xFF,0x00,0x00);
+		rays[i].set_base_hex_color(0xFF,0x00,0x00);
 	}
 
 
