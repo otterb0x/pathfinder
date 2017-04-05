@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iostream>
 
 #include "ray_window.h"
 #include "wall_object.h"
@@ -26,6 +27,8 @@ John:	Look in the ray_caster.cpp file. See what the best way to implement
 
 int main()
 {
+	std::cout << std::endl << 0;
+
 	ray_window cast_display(RESOLUTION_X, RESOLUTION_Y);
 
 	wall_object rays[RESOLUTION_X];
@@ -43,7 +46,8 @@ int main()
 		// Set the color of the wall
 		rays[i].set_hex_color(0xFF,0x00,0x00);
 	}
-	
+
+	std::cout << std::endl << 4 << std::endl << std::endl;	
 
 	ray_caster caster;
 
@@ -61,25 +65,30 @@ int main()
                                  90, angle,
                                  100);
 		
+		std::cout << std::endl << 5 << std::endl << std::endl;		
+	
 		// Draw the ceiling
 		cast_display.draw_rectangle_to_buffer(0,0, RESOLUTION_X - 1,
 				RESOLUTION_Y / 2, 0xFFFFFF);
 
-
+		std::cout << std::endl << 6 << std::endl << std::endl;
 		// Draw the floor
 		cast_display.draw_rectangle_to_buffer(0, RESOLUTION_Y / 2, 
 				RESOLUTION_X - 1, RESOLUTION_Y - 1, 0xBA924E);
-		
+		std::cout << std::endl << 7 << std::endl << std::endl;
 		// Draw the wall
 		cast_display.line_cast_to_buffer(rays);
 		
 		// Draw the buffer to the screen
 		cast_display.draw_buffer();
-	
+		
+		std::cout << std::endl << 8 << std::endl << std::endl;
 		// Update camera position
 		pos_x = 400.0f + (sin(time) * 200.0f);
 		pos_y = 400.0f + (cos(time) * 200.0f);
 
+
+		std::cout << std::endl << 9 << std::endl << std::endl;
 		// Time & angle tracking for example
 		time += 0.01f;
 		angle++;

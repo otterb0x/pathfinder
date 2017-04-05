@@ -1,6 +1,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
+#include <cstdlib>
+
+#include <iostream>
 
 #include "wall_object.h"
 
@@ -20,6 +23,7 @@ class ray_window
 		
 		void line_cast(wall_object line_array[]);
 		void clear();
+
 	private:
 
 		Display *current_display;
@@ -32,7 +36,7 @@ class ray_window
 		int XRES;
 		int YRES;
 
-		int** window_buffer;
+		XImage *window_buffer;
 		
 		void initialize();
 		void close();
