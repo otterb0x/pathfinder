@@ -6,32 +6,17 @@ ray_window::ray_window(int v_XRES, int v_YRES)
 	XRES = v_XRES;
 	YRES = v_YRES;
 
-	std::cout << std::endl << 1 << std::endl << std::endl;
-
-	char * image32 = 0;
-
-	std::cout << std::endl << 2 << std::endl << std::endl;
-/*
-	window_buffer = XGetImage(current_display, current_window, 
-				0,0, XRES, YRES, 
-				AllPlanes, ZPixmap);
-*/
-		
-
 	// Initialize the display
 	initialize();
 
-	window_buffer = XCreateImage(current_display, 
-			DefaultVisual(current_display, 
-			DefaultScreen(current_display)),
-			DefaultDepth(current_display, 
-			DefaultScreen(current_display)),
-			ZPixmap, 0, image32,
-			XRES, YRES, 32, 0);
 
-	std::cout << std::endl << 3 << std::endl << std::endl;
-
-
+	// Initialize window_buffer
+	char *image32=(char *)malloc(XRES*YRES*4);
+        window_buffer = XCreateImage(current_display, 
+		DefaultVisual(current_display,0),
+                DefaultDepth(current_display, 
+		DefaultScreen(current_display)),
+                ZPixmap, 0, image32, XRES, YRES, 32, 0);
 }
 
 ray_window::~ray_window()
@@ -83,6 +68,7 @@ void ray_window::initialize()
 void ray_window::close()
 {
 	// Free up system resources
+	XDestroyImage(window_buffer);
 	XFreeGC(current_display, graphics_context);
         XDestroyWindow(current_display,current_window);
         XCloseDisplay(current_display);
@@ -125,8 +111,8 @@ void ray_window::line_cast_to_buffer(wall_object line_array[])
 			if((current_point > 0) && (current_point < YRES))
 			{
 				// Draw the point on the window buffer
-				XPutPixel(window_buffer, i, current_point, 
-					line_array[i].get_hex_color());
+				XPutPixel(window_buffer, i, current_point,  
+						line_array[i].get_hex_color());
 			}
 			// Proceed to the next point
 			current_point++;
@@ -154,8 +140,9 @@ void ray_window::draw_rectangle_to_buffer(int X1, int Y1,
 				// Make sure we're still in bounds
 				if((j > 0) && (j < YRES))
 				{
-					// Change the pixel color
-				 	XPutPixel(window_buffer, i, j, color);
+					// Draw the point on to the
+					// window buffer 
+					XPutPixel(window_buffer, i, j, color);
 				}
 			}
 		}
@@ -167,8 +154,10 @@ Draws the window buffer to the screen
 */
 void ray_window::draw_buffer()
 {
-	XPutImage(current_display, current_window, graphics_context, 
-		window_buffer, 0, 0, 0, 0, XRES, YRES);
+	// Send window_buffer to the screen
+	XPutImage(current_display, current_window, 
+		DefaultGC(current_display, 0), window_buffer,
+		0,0,0,0, XRES, YRES);
 }
 
 void ray_window::line_cast(wall_object line_array[])
@@ -220,5 +209,18 @@ void ray_window::clear()
 	// Set the window to white
 	XClearWindow(current_display, current_window);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
