@@ -5,18 +5,21 @@
 #include "wall_object.h"
 #include "ray_caster.h"
 
+// GLOBAL CONSTANTS
+
 #define RESOLUTION_X 800
 #define RESOLUTION_Y 600
 
 #define CUBE_SIDE_LENGTH 100
+
+#define FIELD_OF_VIEW 70 
 
 /*
 Unfinished raycast engine.
 
 Check events stops the engine until a key is pressed.
 
-Press any key to spin around and look at the map defined in the
-ray_caster class
+Spin around the map as a demo for things to come.
 
 Chris: 	Look in the ray_window.cpp file for the check_events function.
 	Thats where you'll want to read events from.
@@ -59,8 +62,8 @@ int main()
 		// Get the sizes of the walls to be drawn
 		caster.get_raycast_array(rays, RESOLUTION_X,
                                  pos_x, pos_y,
-                                 90, angle,
-                                 100);
+                                 FIELD_OF_VIEW, angle,
+                                 CUBE_SIDE_LENGTH);
 	
 		// Draw the ceiling
 		cast_display.draw_rectangle_to_buffer(0,0, RESOLUTION_X - 1,
