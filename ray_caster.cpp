@@ -99,13 +99,21 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 				   (distance_calc < shortest_distance))
 					shortest_distance = distance_calc;
 			}
+
 			
 			// Check if the ray was found. If it was, check if
 			// the wall object doesn't have a set size or the
 			// distance we have is shorter than the current set 
 			// distance. If so set the wall object size 
 			// corresponding to the distance.
+			//
+			// Most of these lines have to be pushed back to
+			// compile and still be readable.
 			if(distance_calc > 0)
+			{	
+			// Remove fisheye effect
+			distance_calc *= cos(((-FOV / 2.0f) + 
+				(angle_step * i))* M_PI / 180.0f);
 				if(raycast_array[i].get_size() < 0 ||
 				distance_calc < 
 				raycast_array[i].get_distance())
@@ -113,11 +121,12 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 			// I have to set these lines back for 
 			// g++ to accept them
 				raycast_array[i].set_hex_color(
-		100.0f * raycast_array[i].get_base_red() / distance_calc,
-		100.0f * raycast_array[i].get_base_green() / distance_calc,
-		100.0f * raycast_array[i].get_base_blue() / distance_calc);
+		raycast_array[i].get_base_red() / (distance_calc / 100.0f),
+		raycast_array[i].get_base_green() / (distance_calc / 100.0f),
+		raycast_array[i].get_base_blue() / (distance_calc / 100.0f));
 			raycast_array[i].set_size(distance_calc);
 				}
+			}
 			}
 	}
 }
