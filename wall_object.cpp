@@ -90,7 +90,7 @@ void wall_object::set_size(float distance)
 	if(distance > 0)
 	{
 		//Calculate the wall
-		size_calc = 1000.0f * UNIT_SIZE / distance;
+		size_calc = 500.0f * UNIT_SIZE / distance;
 	}
 	else // Wall doesn't exist
 		size_calc = -1;
