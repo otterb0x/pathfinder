@@ -120,6 +120,12 @@ void ray_window::line_cast_to_buffer(wall_object line_array[])
 	}
 }
 
+void ray_window::draw_text(int x, int y, std::string text)
+{
+	XDrawString(current_display, current_window, graphics_context,
+		x, y, text.c_str(), text.length());
+}
+
 /*
 Draws a rectangle from the top left point to the bottom right point.
 Must be from top left to bottom right.

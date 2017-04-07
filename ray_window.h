@@ -3,6 +3,7 @@
 #include <X11/Xos.h>
 
 #include <stdlib.h>
+#include <string>
 
 #include "wall_object.h"
 
@@ -18,6 +19,9 @@ class ray_window
 		void draw_rectangle_to_buffer(int X1, int Y1, 
 						int X2, int Y2,
 						int color);
+
+		void draw_text(int x, int y, std::string text);
+
 		void draw_buffer();
 		
 		void line_cast(wall_object line_array[]);

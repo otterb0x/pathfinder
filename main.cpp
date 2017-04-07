@@ -1,5 +1,7 @@
 #include <cmath>
+#include <ctime>
 #include <iostream>
+#include <string>
 
 #include "ray_window.h"
 #include "wall_object.h"
@@ -13,6 +15,10 @@
 #define CUBE_SIDE_LENGTH 100
 
 #define FIELD_OF_VIEW 70 
+
+// HELPER FUNCTIONS
+
+double get_elapsed_time();
 
 /*
 Unfinished raycast engine.
@@ -51,14 +57,20 @@ int main()
 
 	ray_caster caster;
 
-	int angle = 0;
+	float angle = 0;
 	float time = 0;
 	int pos_x = 200;
 	int pos_y = 400;
 
+	double frame_rate;
+
 	// Game loop
 	while(1)
 	{
+		frame_rate = get_elapsed_time();
+
+		cast_display.draw_text(10, 10, "Hello");
+
 		// Get the sizes of the walls to be drawn
 		caster.get_raycast_array(rays, RESOLUTION_X,
                                  pos_x, pos_y,
@@ -83,7 +95,17 @@ int main()
 		pos_y = 400.0f + (cos(time) * 200.0f);
 
 		// Time & angle tracking for example
-		time += 0.01f;
-		angle++;
+		time += frame_rate;
+		angle += frame_rate * 100.0f;
 	}
+}
+
+double get_elapsed_time()
+{
+	static clock_t begin = 10;
+	clock_t end = clock();
+	
+	double elapsed_time = double(end - begin) / CLOCKS_PER_SEC;
+
+	begin = clock();
 }
