@@ -9,8 +9,8 @@
 
 // GLOBAL CONSTANTS
 
-#define RESOLUTION_X 800
-#define RESOLUTION_Y 600
+#define RESOLUTION_X 640
+#define RESOLUTION_Y 480
 
 #define CUBE_SIDE_LENGTH 100
 
@@ -87,6 +87,20 @@ int main()
 		// Draw the wall
 		cast_display.line_cast_to_buffer(rays);
 		
+		cast_display.draw_rectangle_to_buffer(
+			(RESOLUTION_X / 2) - 4,
+			(RESOLUTION_Y / 2) - 4,
+			(RESOLUTION_X / 2) + 4,
+			(RESOLUTION_Y / 2) + 4,
+			0x000000);
+
+		cast_display.draw_rectangle_to_buffer(
+			(RESOLUTION_X / 2) - 2,
+			(RESOLUTION_Y / 2) - 2,
+			(RESOLUTION_X / 2) + 2,
+			(RESOLUTION_Y / 2) + 2,
+			0xFFFFFF);
+
 		// Draw the buffer to the screen
 		cast_display.draw_buffer();
 		
@@ -96,7 +110,7 @@ int main()
 
 		// Time & angle tracking for example
 		time += frame_rate;
-		angle += frame_rate * 100.0f;
+		angle += frame_rate * 50.0f;
 	}
 }
 

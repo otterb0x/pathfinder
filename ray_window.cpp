@@ -80,6 +80,25 @@ void ray_window::read_events()
 {
 	// Read next event.
 	XNextEvent(current_display, &event);
+	switch(event.type)
+	{
+		case KeyPress:
+			char keys[25];
+			int len;
+			KeySym keysym;
+			len = XLookupString(&event.xkey, 
+					keys, 25, &keysym, 
+					NULL);
+			if (len < 0)
+			{
+				if (keys[0] == 'r')
+				{
+					keys[0] = 'n';
+				}
+			}
+			std::cout << keys;
+			break;
+	}
 }
 
 /*
