@@ -76,27 +76,46 @@ void ray_window::close()
 
 
 // Chris if you're reading this this is problem a function to work on.
-void ray_window::read_events()
+void ray_window::read_events(keyboard_input &inputs)
 {
+	keyboard_input temp;
+	inputs = temp;
+
+
 	// Read next event.
 	XNextEvent(current_display, &event);
 	switch(event.type)
 	{
 		case KeyPress:
 			char keys[25];
-			int len;
+			int len = 25;
 			KeySym keysym;
 			len = XLookupString(&event.xkey, 
 					keys, 25, &keysym, 
 					NULL);
-			if (len < 0)
+			for(int i = 0; i < len; i++)
 			{
-				if (keys[0] == 'r')
+				if (keys[i] == 'w')
 				{
-					keys[0] = 'n';
+					inputs.W_FORWARD = true;
+				}
+				if (keys[i] == 's')
+				{
+					inputs.W_BACKWARD = true;
+				}
+				if (keys[i] == 'a')
+				{
+					inputs.W_LEFT = true;
+				}
+				if (keys[i] == 'd')
+				{
+					inputs.W_RIGHT = true;
+				}
+				if (keys[i] == 'p')
+				{
+					inputs.W_QUIT = true;
 				}
 			}
-			std::cout << keys;
 			break;
 	}
 }

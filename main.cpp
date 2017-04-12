@@ -38,6 +38,8 @@ int main()
 {
 	ray_window cast_display(RESOLUTION_X, RESOLUTION_Y);
 
+	keyboard_input inputs;
+
 	wall_object rays[RESOLUTION_X];
 
 	// Set default values for all the wall_objects in the rays array
@@ -68,8 +70,6 @@ int main()
 	while(1)
 	{
 		frame_rate = get_elapsed_time();
-
-		cast_display.draw_text(10, 10, "Hello");
 
 		// Get the sizes of the walls to be drawn
 		caster.get_raycast_array(rays, RESOLUTION_X,
@@ -103,11 +103,18 @@ int main()
 
 		// Draw the buffer to the screen
 		cast_display.draw_buffer();
-		
-		// Update camera position
-		pos_x = 400.0f + (sin(time) * 200.0f);
-		pos_y = 400.0f + (cos(time) * 200.0f);
 
+		cast_display.read_events(inputs);
+/*
+		if(inputs.W_FORWARD)
+			pos_x += frame_rate;
+		if(inputs.W_BACKWARD)
+			pos_x -= frame_rate;
+		if(inputs.W_LEFT)
+			pos_y += frame_rate;
+		if(inputs.W_RIGHT)
+			pos_y -= frame_rate;
+*/
 		// Time & angle tracking for example
 		time += frame_rate;
 		angle += frame_rate * 50.0f;
