@@ -16,6 +16,8 @@
 
 #define FIELD_OF_VIEW 70 
 
+#define SPEED 250
+
 // HELPER FUNCTIONS
 
 double get_elapsed_time();
@@ -36,6 +38,8 @@ John:	Look in the ray_caster.cpp file. See what the best way to implement
 
 int main()
 {
+	bool is_running = true;
+
 	ray_window cast_display(RESOLUTION_X, RESOLUTION_Y);
 
 	keyboard_input inputs;
@@ -56,18 +60,17 @@ int main()
 		rays[i].set_base_hex_color(0xFF,0x00,0x00);
 	}
 
-
 	ray_caster caster;
 
 	float angle = 0;
 	float time = 0;
-	int pos_x = 200;
-	int pos_y = 400;
+	double pos_x = 200;
+	double pos_y = 400;
 
 	double frame_rate;
 
 	// Game loop
-	while(1)
+	while(is_running)
 	{
 		frame_rate = get_elapsed_time();
 
@@ -104,20 +107,30 @@ int main()
 		// Draw the buffer to the screen
 		cast_display.draw_buffer();
 
+		// Read the events and get keyboard inputs
 		cast_display.read_events(inputs);
-/*
+
+		// Modify player position
 		if(inputs.W_FORWARD)
-			pos_x += frame_rate;
+		{
+			pos_x += (frame_rate * SPEED);
+		}
 		if(inputs.W_BACKWARD)
-			pos_x -= frame_rate;
+		{
+			pos_x -= (frame_rate * SPEED);
+		}
 		if(inputs.W_LEFT)
-			pos_y += frame_rate;
+		{
+			pos_y -= (frame_rate * SPEED);
+		}
 		if(inputs.W_RIGHT)
-			pos_y -= frame_rate;
-*/
-		// Time & angle tracking for example
-		time += frame_rate;
-		angle += frame_rate * 50.0f;
+		{
+			pos_y += (frame_rate * SPEED);
+		}
+
+		// Check if quit button was pressed 
+		if(inputs.W_QUIT)
+			is_running = false;
 	}
 }
 

@@ -78,46 +78,55 @@ void ray_window::close()
 // Chris if you're reading this this is problem a function to work on.
 void ray_window::read_events(keyboard_input &inputs)
 {
-	keyboard_input temp;
-	inputs = temp;
+	// Reset keyboard inputs	
+	inputs.W_FORWARD	= false;
+	inputs.W_BACKWARD	= false;
+	inputs.W_LEFT		= false;
+	inputs.W_RIGHT		= false;
+	inputs.W_QUIT		= false;
 
+	// If there is an event to be read
+	if(XCheckMaskEvent(current_display, KeyPressMask, &event))
+		switch(event.type)
+		{
+			// Event a button was pressed
+			case KeyPress:
+				char keys[25];
+				int len = 25;
+				KeySym keysym;
+				// Gets the keys pressed
+				len = XLookupString(&event.xkey, 
+						keys, 25, &keysym, 
+						NULL);
 
-	// Read next event.
-	XNextEvent(current_display, &event);
-	switch(event.type)
-	{
-		case KeyPress:
-			char keys[25];
-			int len = 25;
-			KeySym keysym;
-			len = XLookupString(&event.xkey, 
-					keys, 25, &keysym, 
-					NULL);
-			for(int i = 0; i < len; i++)
-			{
-				if (keys[i] == 'w')
+				// Cycle through keys to see
+				// Which ones were pressed and
+				// Set the pressed ones to true
+				for(int i = 0; i < len; i++)
 				{
-					inputs.W_FORWARD = true;
+					if (keys[i] == 'w')
+					{
+						inputs.W_FORWARD = true;
+					}
+					if (keys[i] == 's')
+					{
+						inputs.W_BACKWARD = true;
+					}
+					if (keys[i] == 'a')
+					{
+						inputs.W_LEFT = true;
+					}
+					if (keys[i] == 'd')
+					{
+						inputs.W_RIGHT = true;
+					}
+					if (keys[i] == 'p')
+					{
+						inputs.W_QUIT = true;
+					}
 				}
-				if (keys[i] == 's')
-				{
-					inputs.W_BACKWARD = true;
-				}
-				if (keys[i] == 'a')
-				{
-					inputs.W_LEFT = true;
-				}
-				if (keys[i] == 'd')
-				{
-					inputs.W_RIGHT = true;
-				}
-				if (keys[i] == 'p')
-				{
-					inputs.W_QUIT = true;
-				}
-			}
-			break;
-	}
+				break;
+		}
 }
 
 /*
