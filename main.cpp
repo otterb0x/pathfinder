@@ -42,8 +42,8 @@ int main(int argc, char** argv)
 	// if no argument or an even number entered,
 	// tell user and quit
 	if (argc !=2 || !argv[1]%2) {
-		cout << "Usage: ./Pathfinder <Size>" << endl;
-		cout << "Note: size of maze must be an odd number" << endl;
+		std::cout << "Usage: ./Pathfinder <Size>" << std::endl;
+		std::cout << "Note: size of maze must be an odd number" << std::endl;
 		is_running = false;
 	}
 	// generate maze with size from argument
