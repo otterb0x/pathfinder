@@ -36,9 +36,29 @@ John:	Look in the ray_caster.cpp file. See what the best way to implement
 	your maze class is in the get_raycast_array function.
 */
 
-int main()
+int main(int argc, char** argv)
 {
 	bool is_running = true;
+	// if no argument or an even number entered,
+	// tell user and quit
+	if (argc !=2 || !argv[1]%2) {
+		cout << "Usage: ./Pathfinder <Size>" << endl;
+		cout << "Note: size of maze must be an odd number" << endl;
+		is_running = false;
+	}
+	// generate maze with size from argument
+	generate_maze Maze(atoi(argv[1]));
+
+	// initialize the map
+	Maze.init_map();
+
+	// generate the map
+	Maze.generate_map();
+
+	// print map
+	Maze.print_maze();
+
+	/* End of changes I made in main() -Steve */
 
 	ray_window cast_display(RESOLUTION_X, RESOLUTION_Y);
 
