@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 	Maze.generate_map();
 
 	// print map
-	Maze.print_maze();
+	Maze.print_map();
 
 	/* End of changes I made in main() -Steve */
 
