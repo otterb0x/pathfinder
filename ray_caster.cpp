@@ -27,20 +27,6 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
                                         int FOV, int direction,
                                         int wall_size)
 {
-	// Temporary map until John finishes the maze generator
-	int map[8][8] =	{
-			{1,0,1,0,0,0,1,1},
-			{1,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,1},
-			{0,0,0,1,1,0,0,0},
-			{0,0,0,1,0,0,0,0},
-			{1,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,1},
-			{1,1,0,0,0,1,0,1},
-			};
-	// Temporary map size
-	int map_size = 8;
-
 	// Reset all of the wall objects to have no wall
 	// and reset the color to maximum brightness
 	for(int i = 0; i < raycast_array_size; i++)
