@@ -24,7 +24,7 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
                                         int raycast_array_size,
                                         float pos_x, float pos_y,
                                         generate_maze &maze, int maze_size,
-                                        int FOV, int direction,
+                                        int FOV, float direction,
                                         int wall_size)
 {
 	// Reset all of the wall objects to have no wall
@@ -46,74 +46,34 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 	// The increment for every ray in the Field of View
 	float angle_step = 1.0f * FOV / raycast_array_size;
 
+	int map_x = pos_x / 100;
+	int map_y = pos_y / 100;
+
 	float end_x;
 	float end_y;
 
+	float side_x;
+	float side_y;
+
+	float step_x;
+	float step_y;
+
+	float current_box_dist;
+
 	for(int i = 0; i < raycast_array_size; i++)
 	{
-		// Set the current angle for the specific ray
 		current_angle = start_angle + (i * angle_step);
-	
-		// For every square on the map...
-		for(int j = 0; j < maze_size; j++)
-			for(int k = 0; k < maze_size; k++)
-			{
-			// Set the shortest distance to a high number
-			shortest_distance = 999999999;
-			// Reset the distance calculation to "No calculation"
-			distance_calc = -1;
 
-			// Get the end coordinates based of the players
-			// current position, direction, and the current
-			// ray we're casting
-			end_x = pos_x + get_stepx(999999, current_angle);
-			end_y = pos_y + get_stepy(999999, current_angle);
+		end_x = get_stepx(9999999, current_angle);
+		end_y = get_stepy(9999999, current_angle);
 
-			// If there is something at this point in the map...
-			if(maze.get_square(k, j) > 0)
-			{
-				// Get the closest point of the box
-				distance_calc = get_box_distance(
-					pos_x, pos_y,
-					end_x, end_y,
-					j * wall_size, k * wall_size,
-					wall_size);
-				// If the ray intersects the box, set the
-				// Shortest distance calculated to distance
-				// to the box we just found
-				if((distance_calc > 0) &&
-				   (distance_calc < shortest_distance))
-					shortest_distance = distance_calc;
-			}
-
-			
-			// Check if the ray was found. If it was, check if
-			// the wall object doesn't have a set size or the
-			// distance we have is shorter than the current set 
-			// distance. If so set the wall object size 
-			// corresponding to the distance.
-			//
-			// Most of these lines have to be pushed back to
-			// compile and still be readable.
-			if(distance_calc > 0)
-			{	
-			// Remove fisheye effect
-			distance_calc *= cos(((-FOV / 2.0f) + 
-				(angle_step * i))* M_PI / 180.0f);
-				if(raycast_array[i].get_size() < 0 ||
-				distance_calc < 
-				raycast_array[i].get_distance())
-				{
-			// I have to set these lines back for 
-			// g++ to accept them
-				raycast_array[i].set_hex_color(
-		raycast_array[i].get_base_red() / (distance_calc / 100.0f),
-		raycast_array[i].get_base_green() / (distance_calc / 100.0f),
-		raycast_array[i].get_base_blue() / (distance_calc / 100.0f));
-			raycast_array[i].set_size(distance_calc);
-				}
-			}
-			}
+		current_box_dist = get_box_distance(pos_x, pos_y,
+						end_x, end_y,
+						map_x, map_y,
+						wall_size);
+		
+		side_x = current_box_dist * cos(current_angle * M_PI / 180.0f);
+		side_y = current_box_dist * sin(current_angle * M_PI / 180.0f);
 	}
 }
 

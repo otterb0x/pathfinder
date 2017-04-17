@@ -11,7 +11,7 @@ class ray_caster
 					int raycast_array_size,
 					float pos_x, float pos_y,
 				  	generate_maze &maze, int maze_size,
-				  	int FOV, int direction,
+				  	int FOV, float direction,
 					int wall_size);
 	private:
 		float get_box_distance(float X1, float Y1, float X2, float Y2,
