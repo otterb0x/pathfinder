@@ -22,8 +22,8 @@ per pass through
 */
 void ray_caster::get_raycast_array(wall_object raycast_array[],
                                         int raycast_array_size,
-/*                                        int map[][], int map_size,*/
                                         float pos_x, float pos_y,
+                                        generate_maze &maze, int maze_size,
                                         int FOV, int direction,
                                         int wall_size)
 {
@@ -69,8 +69,8 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 		current_angle = start_angle + (i * angle_step);
 	
 		// For every square on the map...
-		for(int j = 0; j < map_size; j++)
-			for(int k = 0; k < map_size; k++)
+		for(int j = 0; j < maze_size; j++)
+			for(int k = 0; k < maze_size; k++)
 			{
 			// Set the shortest distance to a high number
 			shortest_distance = 999999999;
@@ -84,7 +84,7 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 			end_y = pos_y + get_stepy(999999, current_angle);
 
 			// If there is something at this point in the map...
-			if(map[j][k] > 0)
+			if(maze.get_square(k, j) > 0)
 			{
 				// Get the closest point of the box
 				distance_calc = get_box_distance(

@@ -6,6 +6,7 @@
 #include "ray_window.h"
 #include "wall_object.h"
 #include "ray_caster.h"
+#include "maze_generator.h"
 
 // GLOBAL CONSTANTS
 
@@ -13,14 +14,23 @@
 #define RESOLUTION_Y 480
 
 #define CUBE_SIDE_LENGTH 100
+#define UNIT_SIZE 100
 
 #define FIELD_OF_VIEW 70 
 
 #define SPEED 250
+#define TURN_RATE 100
 
 // HELPER FUNCTIONS
 
 double get_elapsed_time();
+
+
+// Chris these should be in your player class. 
+// They're here so we can experiment.
+float get_stepx(float rate, int degrees);
+float get_stepy(float rate, int degrees);
+
 
 /*
 Unfinished raycast engine.
@@ -85,8 +95,8 @@ int main(int argc, char** argv)
 
 	float angle = 0;
 	float time = 0;
-	double pos_x = 200;
-	double pos_y = 400;
+	double pos_x = (Maze.get_start_x() * UNIT_SIZE) + (UNIT_SIZE / 2);
+	double pos_y = (Maze.get_start_y() * UNIT_SIZE) + (UNIT_SIZE / 2);
 
 	double frame_rate;
 
@@ -97,9 +107,10 @@ int main(int argc, char** argv)
 
 		// Get the sizes of the walls to be drawn
 		caster.get_raycast_array(rays, RESOLUTION_X,
-                                 pos_x, pos_y,
-                                 FIELD_OF_VIEW, angle,
-                                 CUBE_SIDE_LENGTH);
+                                 	pos_x, pos_y,
+				 	Maze, atoi(argv[1]),
+                                 	FIELD_OF_VIEW, angle,
+                                 	CUBE_SIDE_LENGTH);
 	
 		// Draw the ceiling
 		cast_display.draw_rectangle_to_buffer(0,0, RESOLUTION_X - 1,
@@ -134,19 +145,25 @@ int main(int argc, char** argv)
 		// Modify player position
 		if(inputs.W_FORWARD)
 		{
-			pos_x += (frame_rate * SPEED);
+			// Move player forwards
+			pos_x += get_stepx(frame_rate * SPEED, angle);
+			pos_y += get_stepy(frame_rate * SPEED, angle);
 		}
 		if(inputs.W_BACKWARD)
 		{
-			pos_x -= (frame_rate * SPEED);
+			// Move player backwards
+			pos_x += get_stepx(frame_rate * SPEED, 180 + angle);
+			pos_y += get_stepy(frame_rate * SPEED, 180 + angle);
 		}
 		if(inputs.W_LEFT)
 		{
-			pos_y -= (frame_rate * SPEED);
+			// Turn player to the left
+			angle -= frame_rate * TURN_RATE;
 		}
 		if(inputs.W_RIGHT)
 		{
-			pos_y += (frame_rate * SPEED);
+			// Turn player to the right
+			angle += frame_rate * TURN_RATE;
 		}
 
 		// Check if quit button was pressed 
@@ -163,4 +180,22 @@ double get_elapsed_time()
 	double elapsed_time = double(end - begin) / CLOCKS_PER_SEC;
 
 	begin = clock();
+}
+
+/*
+Takes in a direction and a rate and returns the rate of
+travel on the X-Axis
+*/
+float get_stepx(float rate, int degrees)
+{
+    return (((cos(degrees * M_PI / 180.0f))*rate));
+}
+
+/*
+Takes in a direction and a rate and returns the rate of
+travel on the Y-Axis
+*/
+float get_stepy(float rate, int degrees)
+{
+    return (((sin(degrees * M_PI / 180.0f))*rate));
 }

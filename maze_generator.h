@@ -1,6 +1,9 @@
 // NOTE: Maze needs to receive an odd number as parameter as mazes
 // with even number of cells don't generate as nicely
 
+#ifndef Included_maze_generator_H
+#define Included_maze_generator_H
+
 #include <iostream>
 #include <ctime>
 #include <stdlib.h>
@@ -84,3 +87,5 @@ public:
 
 
 };
+
+#endif
