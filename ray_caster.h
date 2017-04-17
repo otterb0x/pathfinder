@@ -21,6 +21,12 @@ class ray_caster
                                         float line1_x2, float line1_y2,
                                         float line2_x1, float line2_y1,
                                         float line2_x2, float line2_y2);
+		
+	 	void get_intersect_points(float line1_x1, float line1_y1,
+                                        float line1_x2, float line1_y2,
+                                        float line2_x1, float line2_y1,
+                                        float line2_x2, float line2_y2,
+					float x, float y);
 
 		float get_stepx(float rate, int degrees);
 		float get_stepy(float rate, int degrees);

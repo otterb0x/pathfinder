@@ -49,19 +49,39 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 	int map_x = pos_x / 100;
 	int map_y = pos_y / 100;
 
+	float dir_x;
+	float temp_x;
+	float dir_y;
+	float temp_y;
+
+	float step_x_calc;
+	float step_y_calc;
+
 	float end_x;
 	float end_y;
 
 	float side_x;
 	float side_y;
 
+	float side_px;
+	float side_py;
+
 	float step_x;
 	float step_y;
 
+	int map_step_x;
+	int map_step_y;
+
 	float current_box_dist;
+
+	bool hit;
+	int count = 0;
 
 	for(int i = 0; i < raycast_array_size; i++)
 	{
+		hit = false;
+		count = 0;
+
 		current_angle = start_angle + (i * angle_step);
 
 		end_x = get_stepx(9999999, current_angle);
@@ -74,6 +94,85 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 		
 		side_x = current_box_dist * cos(current_angle * M_PI / 180.0f);
 		side_y = current_box_dist * sin(current_angle * M_PI / 180.0f);
+
+		while(dir_x == -1)
+		{
+			get_intersect_points(pos_x, pos_y,
+						end_x, end_y,
+						ceil(pos_x/100)*100, 999999,
+						ceil(pos_y/100)*100, -999999,
+						dir_x, temp_y);
+		}
+		while(dir_y == -1)
+		{
+			get_intersect_points(pos_x, pos_y,
+						end_x, end_y,
+						ceil(pos_x/100)*100, 999999,
+						ceil(pos_y/100)*100, -999999,
+						temp_x, dir_y);
+		}
+
+		step_x = get_distance(pos_x + dir_x, pos_y + temp_y,
+					end_x, end_y,
+					ceil((pos_x/100)+1)*100, -9999999,
+					ceil((pos_x/100)+1)*100, 9999999);
+
+		step_y = get_distance(pos_x + temp_x, pos_y + dir_y,
+					end_x, end_y,
+					9999999, ceil((pos_y/100)+1)*100,
+					-9999999, ceil((pos_y/100)+1)*100);
+
+		if(dir_x < pos_x)
+		{
+			map_step_x = -1;
+		}
+		else
+		{
+			map_step_x = 1;
+		}
+		if(dir_y > pos_y)
+		{
+			map_step_y = 1;
+		}
+		else
+		{
+			map_step_y = -1;
+		}
+
+		while(!hit && count < 1000)
+		{
+			if(side_x < side_y)
+			{
+				map_x += map_step_x;
+				side_x += step_x;
+			}
+			else
+			{
+				map_y += map_step_y;
+				side_y += step_y;
+			}
+
+			if(maze.get_square(map_step_x, map_step_y) > 0)
+			{
+				hit = true;
+			}
+			count++;
+		}
+/*
+		distance_calc = sqrt(pow(side_x - pos_x, 2) + 
+					pow(side_y - pos_y, 2));
+*/
+
+		distance_calc = get_box_distance(pos_x, pos_y, end_x, end_y,
+						map_step_x * wall_size,
+						map_step_y * wall_size,
+						wall_size);
+
+		raycast_array[i].set_hex_color(
+		raycast_array[i].get_base_red() / (distance_calc / 100.0f),
+		raycast_array[i].get_base_green() / (distance_calc / 100.0f),
+		raycast_array[i].get_base_blue() / (distance_calc / 100.0f));
+			raycast_array[i].set_size(distance_calc);
 	}
 }
 
@@ -221,6 +320,61 @@ float ray_caster::get_distance(float line1_x1, float line1_y1,
     }
 }
 
+
+void ray_caster::get_intersect_points(float line1_x1, float line1_y1,
+                                        float line1_x2, float line1_y2,
+                                        float line2_x1, float line2_y1,
+                                        float line2_x2, float line2_y2,
+                                        float x, float y)
+{
+	float distance;
+
+	float A1 = line1_y2 - line1_y1;
+	float B1 = line1_x1 - line1_x2;
+	float C1 = (A1 * line1_x1) + (B1 * line1_y1);
+
+	float A2 = line2_y2 - line2_y1;
+	float B2 = line2_x1 - line2_x2;
+	float C2 = (A2 * line2_x1) + (B2 * line2_y1);
+
+	
+
+    float denominator = (A1 * B2) - (A2 * B1);
+
+    if(denominator == 0)
+    {
+        return;
+    }
+
+    // These following intersection values are assuming the line is
+    // infinitly extendeding.
+
+    float intersectX = ((B2 * C1) - (B1 * C2)) / denominator;
+    float intersectY = ((A1 * C2) - (A2 * C1)) / denominator;
+
+    // These following values are used for checking if the intersection
+    // point is within the bounds of the lines.
+
+    float rx0 = (intersectX - line1_x1) / (line1_x2 - line1_x1);
+    float ry0 = (intersectY - line1_y1) / (line1_y2 - line1_y1);
+    float rx1 = (intersectX - line2_x1) / (line2_x2 - line2_x1);
+    float ry1 = (intersectY - line2_y1) / (line2_y2 - line2_y1);
+
+
+    if(((rx0 >= 0.0f && rx0 <= 1) || 
+	(ry0 >= 0.0f && ry0 <= 1)) && 
+	((rx1 >= 0.0f && rx1 <= 1) || 
+	(ry1 >= 0.0f && ry1 <= 1)))
+    {
+	x = intersectX;
+	y = intersectY; 
+    }
+    else
+    {
+        x = -1;
+	y = -1;
+    }
+}
 
 /*
 Takes in a direction and a rate and returns the rate of
