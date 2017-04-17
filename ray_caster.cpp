@@ -122,6 +122,8 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 					9999999, ceil((pos_y/100)+1)*100,
 					-9999999, ceil((pos_y/100)+1)*100);
 
+		std::cout << std::endl << step_x << "  " << step_y;
+
 		if(dir_x < pos_x)
 		{
 			map_step_x = -1;
@@ -173,6 +175,7 @@ void ray_caster::get_raycast_array(wall_object raycast_array[],
 		raycast_array[i].get_base_green() / (distance_calc / 100.0f),
 		raycast_array[i].get_base_blue() / (distance_calc / 100.0f));
 			raycast_array[i].set_size(distance_calc);
+
 	}
 }
 
