@@ -227,8 +227,8 @@ void generate_maze::print_map()
 			else if (map[i][j].cell_type == END)
 				cout << "E";
 		}
-		cout << endl << endl;
 	}
+	cout << endl << endl;
 }
 
 
