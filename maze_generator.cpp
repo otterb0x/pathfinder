@@ -3,15 +3,16 @@
 
 void generate_maze::generate_map()
 {
-	srand(unsigned(time(NULL)));
+	srand(unsigned(time(0)));
 	int random_wall = 0;
 
 	int pos_X, pos_Y;
 	int total_num_cells;
 
+
 	// pick a random starting point with odd coordinates
-	pos_X = ((2*rand())+1) % (map_size -1);
-	pos_Y = ((2*rand())+1) % (map_size -1);
+	pos_X = ( ( (rand()/2) *2) +1) % (map_size -1);
+	pos_Y = ( ( (rand()/2) *2) +1) % (map_size -1);
 
 	// total number of walls to be removed to make the maze
 	total_num_cells = ((map_size-1)/2)*((map_size-1)/2);
@@ -228,6 +229,7 @@ void generate_maze::print_map()
 				cout << "E";
 		}
 	}
+	cout << endl;
 }
 
 
