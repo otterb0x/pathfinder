@@ -51,7 +51,7 @@ void ray_window::initialize()
         
 	// Set the type of inputs that are allowed
 	XSelectInput(current_display, current_window, 
-		     ExposureMask|ButtonPressMask|KeyPressMask);
+		     ExposureMask|KeyPressMask|KeyReleaseMask);
         
 	// Create graphics content
 	graphics_context=XCreateGC(current_display, current_window, 0,0);
@@ -76,10 +76,98 @@ void ray_window::close()
 
 
 // Chris if you're reading this this is problem a function to work on.
-void ray_window::read_events()
+void ray_window::read_events(keyboard_input &inputs)
 {
-	// Read next event.
-	XNextEvent(current_display, &event);
+
+	char keys[25];
+	int len = 25;
+	KeySym keysym;
+
+/*
+	// Reset keyboard inputs	
+	inputs.W_FORWARD	= false;
+	inputs.W_BACKWARD	= false;
+	inputs.W_LEFT		= false;
+	inputs.W_RIGHT		= false;
+	inputs.W_QUIT		= false;
+*/
+
+	// If there is an event to be read. Right now either
+	// key press or key release.
+	for(int i = 0; i < 10; i++)
+	if(XCheckMaskEvent(current_display, 
+			   KeyPressMask|KeyReleaseMask, 
+			   &event))
+		switch(event.type)
+		{
+			// Event a button was pressed
+			case KeyPress:
+				// Gets the keys pressed
+				len = XLookupString(&event.xkey, 
+						keys, 25, &keysym, 
+						NULL);
+
+				// Cycle through keys to see
+				// Which ones were pressed and
+				// Set the pressed ones to true
+				for(int i = 0; i < len; i++)
+				{
+					if (keys[i] == 'w')
+					{
+						inputs.W_FORWARD = true;
+					}
+					if (keys[i] == 's')
+					{
+						inputs.W_BACKWARD = true;
+					}
+					if (keys[i] == 'a')
+					{
+						inputs.W_LEFT = true;
+					}
+					if (keys[i] == 'd')
+					{
+						inputs.W_RIGHT = true;
+					}
+					if (keys[i] == 'p')
+					{
+						inputs.W_QUIT = true;
+					}
+				}
+				break;
+			case KeyRelease:
+				// Gets the keys pressed
+				len = XLookupString(&event.xkey, 
+						keys, 25, &keysym, 
+						NULL);
+
+				// Cycle through keys to see
+				// Which ones were pressed and
+				// Set the pressed ones to true
+				for(int i = 0; i < len; i++)
+				{
+					if (keys[i] == 'w')
+					{
+						inputs.W_FORWARD = false;
+					}
+					if (keys[i] == 's')
+					{
+						inputs.W_BACKWARD = false;
+					}
+					if (keys[i] == 'a')
+					{
+						inputs.W_LEFT = false;
+					}
+					if (keys[i] == 'd')
+					{
+						inputs.W_RIGHT = false;
+					}
+					if (keys[i] == 'p')
+					{
+						inputs.W_QUIT = false;
+					}
+				}
+				break;
+		}
 }
 
 /*
@@ -118,6 +206,12 @@ void ray_window::line_cast_to_buffer(wall_object line_array[])
 			current_point++;
 		}
 	}
+}
+
+void ray_window::draw_text(int x, int y, std::string text)
+{
+	XDrawString(current_display, current_window, graphics_context,
+		x, y, text.c_str(), text.length());
 }
 
 /*
